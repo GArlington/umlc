@@ -1,0 +1,172 @@
+#set ($typeMap = "java")
+/*
+ * ${class.Name}.java
+ *
+ * Auto generated code by umlc
+ * Created on ${date}
+ */
+
+package $package.Name;
+
+
+import com.u2d.model.*;
+import com.u2d.app.PersistenceMechanism;
+import com.u2d.type.*;
+import com.u2d.type.atom.*;
+import com.u2d.type.composite.*;
+import com.u2d.list.RelationalList;
+import com.u2d.reflection.FieldAt;
+
+#set ($abstract = "")
+#if ($class.hasAnnotation("abstract"))
+#set ($abstract = "abstract")
+#end
+#if   ($class.doesExtend()) 
+public $abstract class ${class.Name} extends ${class.Extends} {
+#else
+public $abstract class ${class.Name} extends AbstractComplexEObject {
+#end
+
+    
+    /** Creates a new instance of ${class.Name} */
+    public ${class.Name}() {
+    }
+    public Title title() { 
+        StringBuffer text = new StringBuffer();
+#if ($class.hasAnnotation("title") && !"" == $class.annotationValue("title")  )
+        text.append($class.annotationValue("title"));
+#elseif ($allAttributes.size() > 0)
+        text.append(${allAttributes.get(0).Name}.title() + " [${class.Name}]");
+#else
+        text.append("${class.Name} Instance");
+#end
+        return new Title(text.toString());
+    }    
+    
+
+##
+#foreach ($attribute in $allAttributes)
+
+    // ******    $attribute.Name   ******
+    private final $attribute.Type.getType($typeMap) $attribute.Name = new $attribute.Type.getType($typeMap)();
+#if ($attribute.hasAnnotation("label") || $attribute.hasAnnotation("colsize") ||$attribute.hasAnnotation("displaysize"))
+    @FieldAt(${formatter.formatPropertyAnnotations($attribute)})
+#end    
+    public $attribute.Type.getType($typeMap) get${attribute.getNameCapitalized()}() { return $attribute.getName();}
+#end
+
+   
+########################################  Association methods ######################################################
+## Here we will get the associations the object has
+#foreach ($association in $associationEnds)
+
+#set (  $inverse = "true")
+#if  (  $association.hasAnnotation("no_navigate"))
+#set (  $inverse = "false")
+#end
+
+#if     ($association.isManyToMany() && !$association.Other.hasAnnotation("no_navigate")) ##MANY TO MANY
+
+    // *********  ${association.getOtherEndKnownAs()} ******
+    private final RelationalList ${association.getOtherEndKnownAs()} = new RelationalList(${association.OtherEnd.Name}.class);
+    public static final Class ${association.getOtherEndKnownAs()}Type = ${association.OtherEnd.Name}.class;
+#if  ( ! $association.hasAnnotation("no_navigate"))
+    public static String ${association.getOtherEndKnownAs()}InverseFieldName = "${association.getKnownAs()}";
+#end
+    public static final int ${association.getOtherEndKnownAs()}RelationType = PersistenceMechanism.MANY_TO_MANY;    
+    public static final boolean ${association.getOtherEndKnownAs()}RelationIsInverse = $inverse;
+    public RelationalList get${association.getOtherEndKnownAsUpper()}() { return ${association.getOtherEndKnownAs()}; } 
+ 
+#elseif ($association.isParent() && !$association.Other.hasAnnotation("no_navigate"))##ONE TO MANY PARENT
+
+    // *********  ${association.getOtherEndKnownAs()} ******
+    private final RelationalList ${association.getOtherEndKnownAs()} = new RelationalList(${association.OtherEnd.Name}.class);
+    public static final Class ${association.getOtherEndKnownAs()}Type = ${association.OtherEnd.Name}.class;
+#if  ( ! $association.hasAnnotation("no_navigate"))
+    public static String ${association.getOtherEndKnownAs()}InverseFieldName = "${association.getKnownAs()}";
+#end
+    public static final int ${association.getOtherEndKnownAs()}RelationType = PersistenceMechanism.ONE_TO_MANY;
+    public static final boolean ${association.getOtherEndKnownAs()}RelationIsInverse = $inverse;
+    public RelationalList get${association.getOtherEndKnownAsUpper()}() { return ${association.getOtherEndKnownAs()}; }
+
+#elseif (!$association.Other.hasAnnotation("no_navigate")) ##MANY TO ONE
+
+    // ********  $association.getOtherEndKnownAs() ********
+    private $association.OtherEnd.Name $association.getOtherEndKnownAs();
+#if (  !$association.hasAnnotation("no_navigate"))
+    public static final String ${association.getOtherEndKnownAs()}InverseFieldName = "${association.getKnownAs()}";
+#end
+    public $association.OtherEnd.Name get${association.getOtherEndKnownAsUpper()}() {
+        return $association.getOtherEndKnownAs();
+    }
+    public void set${association.getOtherEndKnownAsUpper()}(${association.OtherEnd.Name} ${association.getOtherEndKnownAs()}) {
+        ${association.OtherEnd.Name} old = this.${association.getOtherEndKnownAs()};
+        this.${association.getOtherEndKnownAs()} = ${association.getOtherEndKnownAs()};
+        firePropertyChange("${association.getOtherEndKnownAs()}", old, this.${association.getOtherEndKnownAs()} );
+    }
+#end
+#end
+####################################################################################################################
+ 
+/************** Uncomment the following as needed *****************************/
+      $formatter.formatFieldOrder($allAttributes, $associationEnds);
+//    public static String[] fieldOrder        = {"fieldname1", "fieldname2"};
+
+      $formatter.formatTabs($allAttributes, $associationEnds);
+//    public static String[] tabViews          = {"fieldname1", "fieldname2"};
+
+      $formatter.formatFlatten($allAttributes);
+//    public static String[] flattenIntoParent = {"fieldname1", "fieldname2"};
+
+      $formatter.formatIdentities($allAttributes);
+//    public static String[] identities = {"fieldname1", "fieldname2"};
+
+#if ($class.hasAnnotation("plural"))
+      public static String pluralName() { return "$class.annotationValue("plural")"; }
+#else
+//    public static String pluralName() { return "${class.Name}s"; }
+#end
+      /* Specify a color to represnt this class */
+#if ($class.hasAnnotation("color"))
+      public static java.awt.Color colorCode = new java.awt.Color($class.annotationValue("color"));
+#else
+//    public static Color colorCode = new Color(0x2332);
+#end
+
+      /* Use a different Icon for each instance. Change photoFieldName. */
+#if ($icon) 
+      private transient PhotoIconAssistant assistant = 
+                        new PhotoIconAssistant(this, $icon);
+      public Icon iconLg() { return assistant.iconLg(); }
+      public Icon iconSm() { return assistant.iconSm(); }
+#else
+//    private transient PhotoIconAssistant assistant = 
+//                        new PhotoIconAssistant(this, photoFieldname);
+//    public Icon iconLg() { return assistant.iconLg(); }
+//    public Icon iconSm() { return assistant.iconSm(); }
+#end
+
+
+      /* Specify the default search field for this class */
+#if ($defaultSearch) 
+      static
+      {
+        ComplexType type = ComplexType.forClass(${class.Name}.class);
+        type.setDefaultSearchField(type.${defaultSearch});
+      }
+#else
+//    static
+//    {
+//      ComplexType type = ComplexType.forClass(${class.Name}.class);
+//      type.setDefaultSearchField(type.field("fieldname").field("subfieldname"));
+//    }
+#end
+
+
+      /* Specify a custom view for this class. 
+//    public EView getMainView()
+//    {
+//       return new Custom${class.Name}View(this);
+//    }
+/******************************************************************************/        
+}

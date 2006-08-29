@@ -1,0 +1,39 @@
+package com.u2d.generated;
+
+
+class Person  
+[color="0x99ccff" title="" plural="People" dx="120.0" dy="70.0" ]
+{
+    name Name ; 
+    birthday DateWithAge ; 
+    ssn SSN ; 
+}
+
+
+class Pet  
+[abstract dx="460.0" dy="80.0" ]
+{
+    name StringEO ; 
+    tag StringEO ; 
+}
+
+
+class Dog extends Pet 
+[title="name.title()" dx="330.0" dy="290.0" ]
+{
+    isClipped BooleanEO ; 
+}
+
+
+class Cat extends Pet 
+[title="name.title()" dx="570.0" dy="290.0" ]
+{
+    isTabby BooleanEO ; 
+}
+
+
+association PersonPet {
+    ( Person as person   )
+    *-*
+    ( Pet as pets  )
+}

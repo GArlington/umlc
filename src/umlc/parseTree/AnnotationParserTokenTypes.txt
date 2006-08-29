@@ -1,0 +1,7 @@
+// $ANTLR 2.7.5 (20050128): annotations.g -> AnnotationParserTokenTypes.txt$
+AnnotationParser    // output token vocab name
+IDENT=4
+EQUALS=5
+StringLiteral=6
+WS=7
+EscapeSequence=8

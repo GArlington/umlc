@@ -1,0 +1,24 @@
+package ${packageName};
+#foreach ($clazz in $clazzes)
+
+#set ($extends = "")
+#if ($extendsNames.containsKey($clazz.Name))
+#set ($extends = "extends $extendsNames.get($clazz.Name)")
+#end
+
+class ${clazz.Name} $extends $help.classAnnotations($clazz)
+{
+#foreach ($attribute in $clazz.AttributeNameType.keySet())
+    $attribute $clazz.AttributeNameType.get($attribute) ${help.attributeAnnotations($clazz, $attribute)}; 
+#end
+}
+#end
+
+#foreach ($relationship in $relationships)
+
+association $help.getAssociationName($relationship) {
+    ( $help.getStart($relationship)  )
+    ${relationship.StartMultiplicity}-${relationship.EndMultiplicity}
+    ( $help.getEnd($relationship) )
+}
+#end
