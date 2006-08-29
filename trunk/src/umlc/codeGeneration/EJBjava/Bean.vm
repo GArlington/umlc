@@ -1,0 +1,107 @@
+#set ($typeMap = "java")
+package $package.Name;
+
+import javax.ejb.EntityBean;
+import javax.ejb.EntityContext;
+import java.rmi.RemoteException;
+
+public class ${class.Name}Bean implements EntityBean {
+
+    EntityContext ctx;
+    
+    public Integer id;
+###################################### these are the basic attributes#######################################
+#foreach ($attribute in $allAttributes)
+    $attribute.Modifier.getValue($typeMap) $attribute.Type.getType($typeMap) $attribute.Name;
+#end
+## Here we will use the relationships the object has for FK
+#foreach ($association in $associationEnds)
+#if ($association.isManyToMany())
+	#MANY TO MANY
+#elseif ($association.isParent())
+	#ONE TO MANY PARENT
+#else
+	##One To Many relationship and this is the child Add a foriegn Key
+	#MANY TO ONE
+	public Integer fk_${association.OtherEnd.Name};
+#end
+#end
+#############################################################################################################
+    /**
+    * Create an instance. Note that this method returns null because the real
+    * creation is managed by the EJB container.
+    */    
+   public Integer ejbCreate (Integer _id) {
+      id = _id;
+      return null;
+   }
+
+    public void ejbPostCreate(Integer id) { }
+
+################## here we output all the Basic get and set methods##################################################3
+##
+#foreach ($attribute in $allAttributes)
+    public $attribute.Type.getType($typeMap) get${attribute.getNameCapitalized()}() { return $attribute.getName();}
+    public void set${attribute.getNameCapitalized()} ($attribute.Type.getType($typeMap) _$attribute.Name) {
+        ${attribute.getName()} = _$attribute.Name;
+    }
+#end
+#foreach ($attribute in $allAttributes)
+    $attribute.Modifier.getValue($typeMap) $attribute.Type.getType($typeMap) $attribute.Name;
+#end
+## Here we will use the relationships the object has for FK
+#foreach ($association in $associationEnds)
+
+
+#if     ($association.isManyToMany()) ##MANY TO MANY
+#elseif ($association.isParent())     ##ONE TO MANY PARENT
+#else                                 ##MANY TO ONE
+
+     public Integer getFk_${association.OtherEnd.Name}() { return fk_$association.OtherEnd.Name;}
+     public void setFk_${association.OtherEnd.Name} (Integer _fk_$association.OtherEnd.Name) {
+	fk_${association.OtherEnd.getName()} = _fk_$association.OtherEnd.Name;
+     }
+#end
+#end
+####################################################################################################################
+########################################  Association methods ######################################################
+## Here we will get the associations the object has
+#foreach ($association in $associationEnds)
+#if     ($association.isManyToMany()) ##MANY TO MANY
+#elseif ($association.isParent())     ##ONE TO MANY PARENT
+
+    public ${association.OtherEnd.Name}[] get${association.OtherEnd.Name} {
+        ${association.OtherEnd.Name}Home home = (${association.OtherEnd.Name}Home) getHome("${association.OtherEnd.Package_name}/${association.OtherEnd.Name}", ${association.OtherEnd.Name}Home.class);
+        Collection children = home.findByFk_${association.ThisEnd.Name;
+        return (${association.OtherEnd.Name}[]) childern.toArray(new ${association.OtherEnd.Name}[0]);
+    }
+#else                                 ##MANY TO ONE
+
+    public $association.OtherEnd.Name get${association.OtherEnd.Name} {
+        ${association.OtherEnd.Name}Home home = (${association.OtherEnd.Name}Home) getHome("${association.OtherEnd.Package_name}/${association.OtherEnd.Name}", ${association.OtherEnd.Name}Home.class);
+        return home.findByPrimaryKey(fk_${association.OtherEnd.Name});
+    }
+#end
+#end
+####################################################################################################################
+    public void setEntityContext(EntityContext ctx) { this.ctx = ctx; }
+    public void unsetEntityContext() { ctx = null; }
+
+    public void ejbActivate() { }
+    public void ejbPassivate() { }
+    public void ejbLoad() { }
+    public void ejbStore() { }
+    public void ejbRemove() { }
+
+    /* Helper function used to lookup objects */
+    private Object getHome (String path, Class type) {
+        try {
+            InitialContext jndiContext = new InitialContext();
+            Object ref = jndiContext.lookup(path);
+            return PortableRemoteObject.narrow(ref,type);
+	} catch (Exception e) {
+         throw new EJBException(e);
+        }
+    }
+
+}

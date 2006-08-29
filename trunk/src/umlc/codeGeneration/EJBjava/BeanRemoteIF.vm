@@ -1,0 +1,30 @@
+#set ($typeMap = "java")
+package $package.Name;
+
+import javax.ejb.EJBObject;
+import java.rmi.RemoteException;
+
+public interface $class.Name extends EJBObject {
+
+    public Integer getId() throws RemoteException;
+    public void setId(Integer id) throws RemoteException;
+
+#foreach ($attribute in $allAttributes)
+    public $attribute.Type.getType($typeMap) get${attribute.getNameCapitalized()}() throws RemoteException;
+    public void set${attribute.getNameCapitalized()} () ($attribute.Type.getType($typeMap) in) throws RemoteException;
+#end
+## Here we will use the relationships the object has for FK
+#foreach ($relation in $allRelations)
+#if (!$relation.ThisMultiplicity.isManyRelationship() && $relation.OtherMultiplicity.isManyRelationship())
+##OneTOMany relationship and this is the parent
+    public ${relation.OtherEnd.Name}[] get${relation.OtherEnd.Name} throws RemoteException;
+#end
+#if ($relation.ThisMultiplicity.isManyRelationship() && !$relation.OtherMultiplicity.isManyRelationship())
+##One To Many relationship and this is the child. Basic get and set for the foriegn key
+    public Integer getFk_${relation.OtherEnd.Name}() throws RemoteException;
+    public void setFk_${relation.OtherEnd.Name} (Integer _fk_$relation.OtherEnd.Name) throws RemoteException;
+    public $relation.OtherEnd.Name get${relation.OtherEnd.Name}();
+#end
+#end
+    
+}

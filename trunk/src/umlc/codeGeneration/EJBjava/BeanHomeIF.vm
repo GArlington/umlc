@@ -1,0 +1,30 @@
+package $package.Name;
+
+import javax.ejb.EJBHome;
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+import java.rmi.RemoteException;
+import java.util.Collection;
+
+public interface ${class.Name}Home extends EJBHome 
+{
+
+  $class.Name create(Integer id) throws RemoteException, CreateException;
+  
+
+#foreach ($attribute in $allAttributes)
+   public Collection findBy${attribute.getNameCapitalized()}(String name);
+#end
+#foreach ($relation in $allRelations)
+#if (!$relation.ThisMultiplicity.isManyRelationship() && $relation.OtherMultiplicity.isManyRelationship())
+##OneTOMany relationship and this is the parent
+##   public Collection get${relation.OtherEnd.Name}();
+#elseif ($relation.ThisMultiplicity.isManyRelationship() && !$relation.OtherMultiplicity.isManyRelationship())
+##One To Many relationship and this is the child
+#end
+#end
+   public $class.Name findByPrimaryKey(Integer id) throws RemoteException, FinderException;
+   public Collection findAll() throws RemoteException, FinderException;
+
+
+}

@@ -1,0 +1,4 @@
+#put required fields in here
+#foreach ($req in $requiredList)
+${req}.required=true
+#end
