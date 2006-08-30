@@ -91,7 +91,8 @@
     </target>
     
     <target name="-post-jar" description="Finish Distibution" >
-            <copy file="run.xml" tofile="dist/run.xml"/>
+            <copy file="run.xml"    tofile="dist/run.xml"/>          
+            <copy file="README.TXT" overwrite="true" tofile="dist/README.TXT"/>
     </target>    
     
 </project>
