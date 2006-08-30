@@ -2,9 +2,10 @@ package com.u2d.generated;
 
 
 class Person  
-[color="0x99ccff"  plural="People" dx="120.0" dy="70.0" ]
+[color="0x99ccff" plural="People" dx="120.0" dy="70.0" ]
 {
-    name Name ; 
+    name Name [flatten="true" ]; 
+    address USAddress [tab="true" ]; 
     birthday DateWithAge ; 
     ssn SSN ; 
 }
@@ -13,21 +14,22 @@ class Person
 class Pet  
 [abstract dx="460.0" dy="80.0" ]
 {
-    name StringEO ; 
     tag StringEO ; 
 }
 
 
 class Dog extends Pet 
-[title="name.title()" dx="330.0" dy="290.0" ]
+[title="name.title()" dx="320.0" dy="290.0" ]
 {
+    name StringEO ; 
     isClipped BooleanEO ; 
 }
 
 
 class Cat extends Pet 
-[title="name.title()" dx="570.0" dy="290.0" ]
+[dx="560.0" dy="290.0" ]
 {
+    registrationNumber IntEO ; 
     isTabby BooleanEO ; 
 }
 
